@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Início</title>
+    <style>
+        body { font-family: Arial; max-width: 700px; margin: 40px auto; padding: 20px; background: #f0f8ff; }
+        .caixa { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #0d47a1; text-align: center; }
+        button { padding: 12px 24px; margin: 8px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        button:hover { transform: translateY(-2px); }
+        .azul { background: #1976d2; color: white; }
+        .verde { background: #388e3c; color: white; }
+        .laranja { background: #f57c00; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="caixa">
+        <h1>🏠 Página Inicial</h1>
+        <p>Usando <strong>endereço completo</strong> — funciona sempre!</p>
+        <hr>
+
+        <!-- ✅ ENDEREÇO COMPLETO → entra na pasta servicos -->
+        <button class="azul" onclick="irPara('https://seu-dominio.com/servicos/detalhes.html')">
+            🔵 Ver Serviços
+        </button>
+
+        <!-- ✅ ENDEREÇO COMPLETO → entra na pasta contato -->
+        <button class="verde" onclick="irPara('https://seu-dominio.com/contato/formulario.html')">
+            🟢 Ir para Contato
+        </button>
+
+        <!-- ✅ ENDEREÇO COMPLETO → mesma pasta -->
+        <button class="laranja" onclick="irPara('https://seu-dominio.com/sobre.html')">
+            🟠 Sobre Nós
+        </button>
+    </div>
+
+    <script>
+        function irPara(endereco) {
+            window.location.href = endereco; // Recebe o link completo e abre
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Contato</title>
+    <style>
+        body { font-family: Arial; max-width: 700px; margin: 40px auto; padding: 20px; background: #e8f5e9; }
+        .caixa { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #2e7d32; text-align: center; }
+        button { padding: 12px 24px; margin: 8px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        button:hover { transform: translateY(-2px); }
+        .voltar { background: #a5d6a7; }
+        .servicos { background: #2196f3; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="caixa">
+        <h1>📬 Página de Contato</h1>
+        <p>Estou dentro da pasta <strong>contato</strong> — endereço completo funciona igual!</p>
+        <hr>
+
+        <!-- ✅ VOLTAR → endereço completo -->
+        <button class="voltar" onclick="irPara('https://seu-dominio.com/index.html')">
+            ⬅ Voltar à Página Inicial
+        </button>
+
+        <!-- ✅ IR PARA SERVIÇOS → endereço completo -->
+        <button class="servicos" onclick="irPara('https://seu-dominio.com/servicos/detalhes.html')">
+            🔵 Ver Serviços
+        </button>
+    </div>
+
+    <script>
+        function irPara(endereco) {
+            window.location.href = endereco;
+        }
+    </script>
+
+</body>
+</html>
