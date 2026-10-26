@@ -2,46 +2,292 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Início</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master JS - Questionários</title>
     <style>
-        body { font-family: Arial; max-width: 700px; margin: 40px auto; padding: 20px; background: #f0f8ff; }
-        .caixa { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        h1 { color: #0d47a1; text-align: center; }
-        button { padding: 12px 24px; margin: 8px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-        button:hover { transform: translateY(-2px); }
-        .azul { background: #1976d2; color: white; }
-        .verde { background: #388e3c; color: white; }
-        .laranja { background: #f57c00; color: white; }
+        :root {
+            --primary: #1e3c72;
+            --secondary: #2a5298;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --bg: #f4f7f6;
+            --text: #333;
+        }
+
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: white; width: 95%; max-width: 700px; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        
+        h1 { color: var(--primary); text-align: center; margin-bottom: 10px; }
+        .theme-indicator { text-align: center; font-weight: bold; color: #666; margin-bottom: 20px; font-size: 1.1rem; }
+        
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Menu de Temas */
+        .theme-menu { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .theme-btn { background: white; border: 2px solid var(--primary); color: var(--primary); padding: 15px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: bold; transition: 0.3s; text-align: left; }
+        .theme-btn:hover { background: var(--primary); color: white; }
+
+        /* Quiz */
+        .question-box { margin-bottom: 20px; padding: 20px; border: 1px solid #eee; border-radius: 12px; background: #fafafa; }
+        .options-list { list-style: none; padding: 0; }
+        .options-list li { margin: 8px 0; padding: 12px; background: white; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .options-list li:hover { background: #eef2ff; border-color: var(--primary); }
+        .options-list li.selected { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-size: 1rem; font-weight: bold; width: 100%; transition: 0.3s; }
+        .btn:hover { background: var(--secondary); }
+        
+        .result { text-align: center; font-size: 1.3rem; font-weight: bold; }
+        .success { color: var(--success); }
+        .error { color: var(--error); }
     </style>
 </head>
 <body>
 
-    <div class="caixa">
-        <h1>🏠 Página Inicial</h1>
-        <p>Usando <strong>endereço completo</strong> — funciona sempre!</p>
-        <hr>
+<div class="container">
+    <h1>Master JavaScript</h1>
+    <div id="theme-label" class="theme-indicator">Selecione um tema para começar</div>
 
-        <!-- ✅ ENDEREÇO COMPLETO → entra na pasta servicos -->
-        <button class="azul" onclick="irPara('https://seu-dominio.com/servicos/detalhes.html')">
-            🔵 Ver Serviços
-        </button>
-
-        <!-- ✅ ENDEREÇO COMPLETO → entra na pasta contato -->
-        <button class="verde" onclick="irPara('https://seu-dominio.com/contato/formulario.html')">
-            🟢 Ir para Contato
-        </button>
-
-        <!-- ✅ ENDEREÇO COMPLETO → mesma pasta -->
-        <button class="laranja" onclick="irPara('https://seu-dominio.com/sobre.html')">
-            🟠 Sobre Nós
-        </button>
+    <!-- TELA 1: Menu de Temas -->
+    <div id="step-menu" class="step active">
+        <div class="theme-menu" id="theme-list"></div>
     </div>
 
-    <script>
-        function irPara(endereco) {
-            window.location.href = endereco; // Recebe o link completo e abre
+    <!-- TELA 2: Questionário -->
+    <div id="step-quiz" class="step">
+        <div id="questions-container"></div>
+        <button class="btn" onclick="checkAnswers()">Enviar Respostas</button>
+    </div>
+
+    <!-- TELA 3: Resultado -->
+    <div id="step-result" class="step">
+        <div class="result">
+            <p id="result-text"></p>
+            <br>
+            <button id="btn-next" class="btn">Próximo Passo</button>
+            <button id="btn-back" class="btn" style="background:#999; margin-top:10px;">Voltar ao Menu</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const themesData = {
+        "T1": {
+            name: "O que é JavaScript e para que serve",
+            quizzes: [
+                { // Quiz 1
+                    questions: [
+                        { q: "Qual a principal função do JS nas páginas?", options: ["Apenas cores", "Dar vida e movimento", "Criar banco de dados", "Substituir o HTML"], correct: 1 },
+                        { q: "O JS é executado principalmente onde?", options: ["No servidor apenas", "No navegador do usuário", "No hardware do PC", "No cabo de rede"], correct: 1 }
+                    ]
+                },
+                { // Quiz 2
+                    questions: [
+                        { q: "O JS permite criar interatividade. Qual exemplo disso?", options: ["Um texto estático", "Uma cor de fundo fixa", "Um menu que abre e fecha", "Uma imagem parada"], correct: 2 },
+                        { q: "O JS é essencial para qual tipo de experiência?", options: ["Experiência Estática", "Experiência Dinâmica", "Experiência de Impressão", "Experiência Offline"], correct: 1 }
+                    ]
+                }
+            ]
+        },
+        "T2": {
+            name: "Onde colocar o código JS",
+            quizzes: [
+                {
+                    questions: [
+                        { q: "Onde podemos escrever código JS?", options: ["Apenas no CSS", "Direto na página ou arquivo separado", "Apenas no Windows", "Dentro de imagens"], correct: 1 },
+                        { q: "Qual a tag HTML usada para JS interno?", options: ["<js>", "<script>", "<javascript>", "<code-js>"], correct: 1 }
+                    ]
+                },
+                {
+                    questions: [
+                        { q: "Para que serve o console.log()?", options: ["Para apagar o site", "Para ver resultados e debugar", "Para enviar e-mail", "Para mudar a cor da página"], correct: 1 },
+                        { q: "Qual a extensão de um arquivo JavaScript externo?", options: [".html", ".css", ".js", ".java"], correct: 2 }
+                    ]
+                }
+            ]
+        },
+        "T3": {
+            name: "Variáveis (let, const, var)",
+            quizzes: [
+                {
+                    questions: [
+                        { q: "Qual a melhor opção para variáveis que mudam de valor?", options: ["var", "const", "let", "static"], correct: 2 },
+                        { q: "O que acontece se tentarmos mudar o valor de uma 'const'?", options: ["O valor muda normalmente", "O JS apaga o arquivo", "Gera um erro de atribuição", "O PC reinicia"], correct: 2 }
+                    ]
+                },
+                {
+                    questions: [
+                        { q: "Qual a diferença principal do 'var' para o 'let'?", options: ["O var é mais moderno", "O let tem escopo de bloco", "O var é obrigatório", "Não há diferença"], correct: 1 },
+                        { q: "Como declaramos uma variável para guardar o nome de um usuário?", options: ["const nome = 'João'", "let nome = 'João'", "Ambas estão corretas", "Nenhuma está correta"], correct: 2 }
+                    ]
+                }
+            ]
+        },
+        "T4": {
+            name: "Tipos de Dados",
+            quizzes: [
+                {
+                    questions: [
+                        { q: "Qual tipo representa 'sim' ou 'não'?", options: ["Número", "Texto", "Booleano", "Nulo"], correct: 2 },
+                        { q: "O valor '10' entre aspas ('10') é considerado o quê?", options: ["Número", "Texto (String)", "Booleano", "Nulo"], correct: 1 }
+                    ]
+                },
+                {
+                    questions: [
+                        { q: "O que representa o tipo 'Null'?", options: ["Número zero", "Texto vazio", "Valor nulo ou vazio", "Erro crítico"], correct: 2 },
+                        { q: "Qual tipo de dado usamos para cálculos matemáticos?", options: ["String", "Number", "Boolean", "Null"], correct: 1 }
+                    ]
+                }
+            ]
+        },
+        "T5": {
+            name: "Entrada e Saída Simples",
+            quizzes: [
+                {
+                    questions: [
+                        { q: "Qual comando mostra uma mensagem de alerta?", options: ["prompt()", "alert()", "console.log()", "write()"], correct: 1 },
+                        { q: "Qual comando pede um dado ao usuário?", options: ["alert()", "prompt()", "input()", "ask()"], correct: 1 }
+                    ]
+                },
+                {
+                    questions: [
+                        { q: "O prompt() retorna qual tipo de dado por padrão?", options: ["Número", "Booleano", "Texto (String)", "Nulo"], correct: 2 },
+                        { q: "Onde o console.log() escreve a informação?", options: ["Na tela do site", "No console do desenvolvedor", "Num arquivo .txt", "Num alerta"], correct: 1 }
+                    ]
+                }
+            ]
+        },
+        "T6": {
+            name: "Comentários",
+            quizzes: [
+                {
+                    questions: [
+                        { q: "Para que servem os comentários?", options: ["Acelerar o código", "Anotar o código sem atrapalhar", "Criar funções", "Esconder o código do dono"], correct: 1 },
+                        { q: "Como se faz um comentário de uma linha?", options: ["<!-- -->", "/* */", "//", "#"], correct: 2 }
+                    ]
+                },
+                {
+                    questions: [
+                        { q: "Como se faz um comentário de várias linhas?", options: ["//", "/* ... */", "<!-- -->", "##"], correct: 1 },
+                        { q: "O navegador executa o que está dentro de um comentário?", options: ["Sim, sempre", "Não, ele ignora", "Apenas se for let", "Apenas se for const"], correct: 1 }
+                    ]
+                }
+            ]
         }
-    </script>
+    };
+
+    let currentThemeId = null;
+    let currentQuizIndex = 0; // 0 para Quiz 1, 1 para Quiz 2
+    let userAnswers = [];
+
+    function showStep(stepId) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById(stepId).classList.add('active');
+    }
+
+    function initMenu() {
+        const menu = document.getElementById('theme-list');
+        menu.innerHTML = '';
+        Object.keys(themesData).forEach(id => {
+            const btn = document.createElement('button');
+            btn.className = 'theme-btn';
+            btn.innerText = themesData[id].name;
+            btn.onclick = () => startTheme(id);
+            menu.appendChild(btn);
+        });
+    }
+
+    function startTheme(id) {
+        currentThemeId = id;
+        currentQuizIndex = 0;
+        loadQuiz();
+    }
+
+    function loadQuiz() {
+        const theme = themesData[currentThemeId];
+        const quiz = theme.quizzes[currentQuizIndex];
+        
+        document.getElementById('theme-label').innerText = `${theme.name} - Questionário ${currentQuizIndex + 1}/2`;
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+        userAnswers = [];
+
+        quiz.questions.forEach((q, qIdx) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'question-box';
+            qDiv.innerHTML = `<p><strong>${qIdx + 1}. ${q.q}</strong></p>`;
+            
+            const list = document.createElement('ul');
+            list.className = 'options-list';
+
+            q.options.forEach((opt, optIdx) => {
+                const li = document.createElement('li');
+                li.innerText = opt;
+                li.onclick = () => {
+                    list.querySelectorAll('li').forEach(el => el.classList.remove('selected'));
+                    li.classList.add('selected');
+                    userAnswers[qIdx] = optIdx;
+                };
+                list.appendChild(li);
+            });
+
+            qDiv.appendChild(list);
+            container.appendChild(qDiv);
+            userAnswers.push(null);
+        });
+
+        showStep('step-quiz');
+    }
+
+    function checkAnswers() {
+        if (userAnswers.includes(null)) {
+            alert("Responda todas as perguntas antes de enviar!");
+            return;
+        }
+
+        const quiz = themesData[currentThemeId].quizzes[currentQuizIndex];
+        let correct = 0;
+        quiz.questions.forEach((q, i) => {
+            if (userAnswers[i] === q.correct) correct++;
+        });
+
+        const resultText = document.getElementById('result-text');
+        const btnNext = document.getElementById('btn-next');
+
+        if (correct === 2) {
+            resultText.innerHTML = `<span class="success">Excelente! Você acertou tudo!</span>`;
+            
+            if (currentQuizIndex === 0) {
+                btnNext.innerText = "Ir para Questionário 2";
+                btnNext.onclick = () => {
+                    currentQuizIndex = 1;
+                    loadQuiz();
+                };
+            } else {
+                btnNext.innerText = "Tema Concluído! Voltar ao Menu";
+                btnNext.onclick = () => {
+                    showStep('step-menu');
+                    document.getElementById('theme-label').innerText = "Selecione um tema para começar";
+                };
+            }
+        } else {
+            resultText.innerHTML = `<span class="error">Você acertou ${correct} de 2. <br> Estude mais um pouco e tente novamente!</span>`;
+            btnNext.innerText = "Tentar Novamente";
+            btnNext.onclick = loadQuiz;
+        }
+
+        showStep('step-result');
+    }
+
+    document.getElementById('btn-back').onclick = () => {
+        showStep('step-menu');
+        document.getElementById('theme-label').innerText = "Selecione um tema para começar";
+    };
+
+    window.onload = initMenu;
+</script>
 
 </body>
 </html>
