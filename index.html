@@ -14,9 +14,11 @@
             --text: #333;
         }
 
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; -webkit-user-select: none; /* Safari */
-         -ms-user-select: none;     /* IE */
-          user-select: none;         /* Chrome, Firefox e Opera */
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0;/* Linhas de proteção contra cópia (adicione aqui): */
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none;     /* IE */
+            user-select: none;         /* Chrome, Firefox e Opera */
+          } 
         .container { background: white; width: 95%; max-width: 700px; padding: 30px; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
         
         h1 { color: var(--primary); text-align: center; margin-bottom: 10px; }
@@ -289,12 +291,7 @@
     };
 
     window.onload = initMenu;
-    document.addEventListener('keydown', function(e) {
-        if ((e.ctrlKey && (e.key === 'c' || e.key === 'u')) || e.key === 'F12') {
-            e.preventDefault();
-            alert("Ação bloqueada!");
-        }
-           // Desativa o clique com o botão direito
+          // Desativa o clique com o botão direito
       document.addEventListener('contextmenu', event => event.preventDefault());
 
       // Desativa as teclas de inspeção
